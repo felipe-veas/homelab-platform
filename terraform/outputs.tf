@@ -14,6 +14,6 @@ output "grafana_url" {
 }
 
 output "grafana_credentials" {
-  description = "Grafana default credentials"
-  value       = "admin / homelab"
+  description = "Command to retrieve Grafana admin password from the cluster"
+  value       = "kubectl -n monitoring get secret grafana-admin-secret -o jsonpath='{.data.admin-password}' | base64 -d"
 }
