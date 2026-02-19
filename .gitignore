@@ -1,0 +1,19 @@
+# Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+!*.tfvars.example
+.terraform.lock.hcl
+
+# Secrets & keys
+*.pem
+*.key
+*.crt
+*.p12
+kubeconfig
+*.kubeconfig
+
+# OS
+.DS_Store
+Thumbs.db
