@@ -15,7 +15,10 @@ spec:
       values: |
         grafana:
           enabled: true
-          adminPassword: homelab
+          admin:
+            existingSecret: grafana-admin-secret
+            userKey: admin-user
+            passwordKey: admin-password
           ingress:
             enabled: true
             ingressClassName: traefik

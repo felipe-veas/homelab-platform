@@ -27,3 +27,9 @@ variable "kubeconfig_context" {
   type        = string
   default     = "k3d-platform"
 }
+
+variable "grafana_admin_password" {
+  description = "Grafana admin password. Set via TF_VAR_grafana_admin_password or as sensitive variable in Terraform Cloud."
+  type        = string
+  sensitive   = true
+}
