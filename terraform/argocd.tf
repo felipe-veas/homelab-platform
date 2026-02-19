@@ -21,8 +21,18 @@ resource "helm_release" "argocd" {
   depends_on = [kubernetes_namespace.argocd]
 }
 
+resource "kubectl_manifest" "argocd_projects" {
+  for_each = toset([
+    "${path.module}/../argocd/project-infrastructure.yaml",
+    "${path.module}/../argocd/project-apps.yaml",
+  ])
+  yaml_body = file(each.value)
+
+  depends_on = [helm_release.argocd]
+}
+
 resource "kubectl_manifest" "root_app" {
   yaml_body = file("${path.module}/../argocd/root-app.yaml")
 
-  depends_on = [helm_release.argocd]
+  depends_on = [kubectl_manifest.argocd_projects]
 }
