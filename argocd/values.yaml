@@ -1,0 +1,45 @@
+global:
+  domain: argocd.localhost
+
+configs:
+  params:
+    server.insecure: true   # Sin TLS en servidor local, Traefik maneja TLS
+
+server:
+  service:
+    type: NodePort
+    nodePortHttp: 30080
+    nodePortHttps: 30443
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hostname: argocd.localhost
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web
+
+repoServer:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+applicationSet:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+redis:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      cpu: 100m
+      memory: 64Mi
