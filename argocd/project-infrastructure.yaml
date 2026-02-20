@@ -83,3 +83,5 @@ spec:
       kind: Alertmanager
     - group: monitoring.coreos.com
       kind: ThanosRuler
+    - group: ""
+      kind: PersistentVolumeClaim

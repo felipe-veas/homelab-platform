@@ -81,7 +81,7 @@ spec:
             receivers:
               - name: "null"
           alertmanagerSpec:
-            retention: 15d
+            retention: 360h
             resources:
               requests:
                 cpu: 10m
