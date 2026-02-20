@@ -10,7 +10,7 @@ spec:
     - group: apiextensions.k8s.io
       kind: CustomResourceDefinition
       managedFieldsManagers:
-        - kyverno
+        - kubectl-kyverno
   project: infrastructure
   source:
     chart: kyverno
