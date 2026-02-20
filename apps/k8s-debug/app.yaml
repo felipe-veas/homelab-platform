@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: demo
+  name: k8s-debug
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -10,10 +10,10 @@ spec:
   source:
     repoURL: https://github.com/felipe-veas/homelab-platform.git
     targetRevision: HEAD
-    path: apps/demo/manifests
+    path: apps/k8s-debug/manifests
   destination:
     server: https://kubernetes.default.svc
-    namespace: demo
+    namespace: k8s-debug
   syncPolicy:
     automated:
       prune: true
