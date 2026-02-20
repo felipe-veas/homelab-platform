@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fluent-bit
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infrastructure
+  source:
+    repoURL: https://fluent.github.io/helm-charts
+    chart: fluent-bit
+    targetRevision: 0.47.1
+    helm:
+      releaseName: fluent-bit
+      values: |
+        config:
+          inputs: |
+            [INPUT]
+                Name cpu
+                Interval 1
+                Tag cpu.usage
+            [INPUT]
+                Name mem
+                Interval 1
+                Tag mem.usage
+          outputs: |
+            [OUTPUT]
+                Name stdout
+                Match *
+          filters: |
+            [FILTER]
+                Name modify
+                Match *
+                Add host "$HOSTNAME"
+        serviceAccount:
+          create: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: logging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
