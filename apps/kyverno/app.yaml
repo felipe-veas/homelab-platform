@@ -12,6 +12,9 @@ spec:
       managedFieldsManagers:
         - kubectl-kyverno
         - k3s
+      jqPathExpressions:
+        - .status
+        - .spec.conversion
   project: infrastructure
   source:
     chart: kyverno
