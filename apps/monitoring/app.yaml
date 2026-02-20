@@ -12,6 +12,7 @@ spec:
     chart: victoria-metrics-k8s-stack
     targetRevision: 0.71.1
     helm:
+      releaseName: vm
       values: |
         grafana:
           enabled: true
