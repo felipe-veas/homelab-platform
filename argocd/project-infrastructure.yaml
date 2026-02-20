@@ -23,6 +23,8 @@ spec:
     - namespace: kyverno
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
     - group: cert-manager.io
       kind: ClusterIssuer
     - group: traefik.io
