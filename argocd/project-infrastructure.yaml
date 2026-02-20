@@ -77,3 +77,9 @@ spec:
       kind: PodDisruptionBudget
     - group: batch
       kind: Job
+    - group: monitoring.coreos.com
+      kind: Prometheus
+    - group: monitoring.coreos.com
+      kind: Alertmanager
+    - group: monitoring.coreos.com
+      kind: ThanosRuler
