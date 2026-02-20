@@ -18,11 +18,11 @@ spec:
           inputs: |
             [INPUT]
                 Name cpu
-                Interval 1
+                Interval_Sec 1
                 Tag cpu.usage
             [INPUT]
                 Name mem
-                Interval 1
+                Interval_Sec 1
                 Tag mem.usage
           outputs: |
             [OUTPUT]
