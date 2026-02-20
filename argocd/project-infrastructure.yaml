@@ -10,7 +10,7 @@ spec:
   sourceRepos:
     - https://github.com/felipe-veas/homelab-platform.git
     - https://charts.jetstack.io
-    - https://prometheus-community.github.io/helm-charts
+    - https://victoriametrics.github.io/helm-charts/
     - https://traefik.github.io/charts
     - https://kyverno.github.io/kyverno
   destinations:
@@ -72,12 +72,8 @@ spec:
       kind: Certificate
     - group: cert-manager.io
       kind: ClusterIssuer
-    - group: monitoring.coreos.com
-      kind: PrometheusRule
-    - group: monitoring.coreos.com
-      kind: ServiceMonitor
-    - group: monitoring.coreos.com
-      kind: PodMonitor
+    - group: operator.victoriametrics.com
+      kind: "*"
     - group: traefik.io
       kind: Middleware
     - group: traefik.io
@@ -86,11 +82,5 @@ spec:
       kind: PodDisruptionBudget
     - group: batch
       kind: Job
-    - group: monitoring.coreos.com
-      kind: Prometheus
-    - group: monitoring.coreos.com
-      kind: Alertmanager
-    - group: monitoring.coreos.com
-      kind: ThanosRuler
     - group: ""
       kind: PersistentVolumeClaim
