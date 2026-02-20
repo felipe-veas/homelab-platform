@@ -13,6 +13,7 @@ spec:
     - https://victoriametrics.github.io/helm-charts/
     - https://traefik.github.io/charts
     - https://kyverno.github.io/kyverno
+    - https://fluent.github.io/helm-charts
   destinations:
     - namespace: cert-manager
       server: https://kubernetes.default.svc
