@@ -9,8 +9,8 @@ spec:
   ignoreDifferences:
     - group: ""
       kind: PersistentVolumeClaim
-      jsonPointers:
-        - /spec/resources/requests/storage
+      jqPathExpressions:
+        - .spec
   project: infrastructure
   source:
     repoURL: https://victoriametrics.github.io/helm-charts/
