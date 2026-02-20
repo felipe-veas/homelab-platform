@@ -36,60 +36,71 @@ spec:
                   namespaces:
                   - monitoring
                   - kube-system
+                  - logging
             disallow-capabilities:
               any:
               - resources:
                   namespaces:
                   - monitoring
                   - kube-system
+                  - logging
             disallow-capabilities-strict:
               any:
               - resources:
                   namespaces:
                   - monitoring
                   - kube-system
+                  - logging
             disallow-host-namespaces:
               any:
               - resources:
                   namespaces:
                   - monitoring
                   - kube-system
+                  - logging
+                  - logging
             disallow-host-path:
               any:
               - resources:
                   namespaces:
                   - monitoring
                   - kube-system
+                  - logging
             disallow-host-ports:
               any:
               - resources:
                   namespaces:
                   - monitoring
                   - kube-system
+                  - logging
             disallow-privilege-escalation:
               any:
               - resources:
                   namespaces:
                   - monitoring
                   - kube-system
+                  - logging
             require-run-as-non-root-user:
               any:
               - resources:
                   namespaces:
                   - monitoring
                   - kube-system
+                  - logging
             restrict-seccomp-strict:
               any:
               - resources:
                   namespaces:
                   - monitoring
                   - kube-system
+                  - logging
             restrict-volume-types:
               any:
               - resources:
                   namespaces:
                   - monitoring
                   - kube-system
+                  - logging
   destination:
     namespace: kyverno
     server: https://kubernetes.default.svc
