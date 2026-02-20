@@ -1,0 +1,102 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kyverno-policies
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  ignoreDifferences:
+    - group: kyverno.io
+      kind: ClusterPolicy
+      jqPathExpressions:
+        - .metadata.managedFields
+        - .metadata.generation
+        - .metadata.resourceVersion
+        - .status
+  project: infrastructure
+  sources:
+    - path: apps/kyverno/policies
+      repoURL: https://github.com/felipe-veas/homelab-platform.git
+      targetRevision: HEAD
+      directory:
+        recurse: true
+    - chart: kyverno-policies
+      repoURL: https://kyverno.github.io/kyverno/
+      targetRevision: "3.5.2"
+      helm:
+        releaseName: kyverno-policies
+        values: |
+          validationFailureAction: Enforce
+          podSecurityStandard: baseline
+          policyExclude:
+            require-run-as-nonroot:
+              any:
+              - resources:
+                  namespaces:
+                  - monitoring
+                  - kube-system
+            disallow-capabilities:
+              any:
+              - resources:
+                  namespaces:
+                  - monitoring
+                  - kube-system
+            disallow-capabilities-strict:
+              any:
+              - resources:
+                  namespaces:
+                  - monitoring
+                  - kube-system
+            disallow-host-namespaces:
+              any:
+              - resources:
+                  namespaces:
+                  - monitoring
+                  - kube-system
+            disallow-host-path:
+              any:
+              - resources:
+                  namespaces:
+                  - monitoring
+                  - kube-system
+            disallow-host-ports:
+              any:
+              - resources:
+                  namespaces:
+                  - monitoring
+                  - kube-system
+            disallow-privilege-escalation:
+              any:
+              - resources:
+                  namespaces:
+                  - monitoring
+                  - kube-system
+            require-run-as-non-root-user:
+              any:
+              - resources:
+                  namespaces:
+                  - monitoring
+                  - kube-system
+            restrict-seccomp-strict:
+              any:
+              - resources:
+                  namespaces:
+                  - monitoring
+                  - kube-system
+            restrict-volume-types:
+              any:
+              - resources:
+                  namespaces:
+                  - monitoring
+                  - kube-system
+  destination:
+    namespace: kyverno
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
