@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-debug
+  namespace: k8s-debug
+  labels:
+    app: k8s-debug
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-debug
+  template:
+    metadata:
+      labels:
+        app: k8s-debug
+    spec:
+      containers:
+        - name: k8s-debug
+          image: nginx:stable-alpine
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 32Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8s-debug
+  namespace: k8s-debug
+spec:
+  selector:
+    app: k8s-debug
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: k8s-debug
+  namespace: k8s-debug
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: k8s-debug.localhost
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: k8s-debug
+                port:
+                  number: 80
