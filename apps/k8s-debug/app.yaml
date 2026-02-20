@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8s-debug
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: apps
+  source:
+    repoURL: https://github.com/felipe-veas/homelab-platform.git
+    targetRevision: HEAD
+    path: apps/k8s-debug/manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: k8s-debug
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

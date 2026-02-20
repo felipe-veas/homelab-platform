@@ -10,7 +10,7 @@ spec:
   sourceRepos:
     - https://github.com/felipe-veas/homelab-platform.git
   destinations:
-    - namespace: demo
+    - namespace: k8s-debug
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: ""
