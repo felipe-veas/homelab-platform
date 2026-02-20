@@ -25,6 +25,7 @@ resource "kubectl_manifest" "argocd_projects" {
   for_each = toset([
     "${path.module}/../argocd/project-infrastructure.yaml",
     "${path.module}/../argocd/project-apps.yaml",
+    "${path.module}/../argocd/project-platform.yaml",
   ])
   yaml_body = file(each.value)
 
