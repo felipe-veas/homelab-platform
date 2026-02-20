@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "argocd" {
+resource "kubernetes_namespace_v1" "argocd" {
   metadata {
     name = var.argocd_namespace
     labels = {
@@ -12,13 +12,13 @@ resource "helm_release" "argocd" {
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argo-cd"
   version    = var.argocd_chart_version
-  namespace  = kubernetes_namespace.argocd.metadata[0].name
+  namespace  = kubernetes_namespace_v1.argocd.metadata[0].name
 
   values = [
     file("${path.module}/../argocd/values.yaml")
   ]
 
-  depends_on = [kubernetes_namespace.argocd]
+  depends_on = [kubernetes_namespace_v1.argocd]
 }
 
 resource "kubectl_manifest" "argocd_projects" {
