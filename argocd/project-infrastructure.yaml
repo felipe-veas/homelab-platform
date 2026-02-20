@@ -12,12 +12,15 @@ spec:
     - https://charts.jetstack.io
     - https://prometheus-community.github.io/helm-charts
     - https://traefik.github.io/charts
+    - https://kyverno.github.io/kyverno
   destinations:
     - namespace: cert-manager
       server: https://kubernetes.default.svc
     - namespace: monitoring
       server: https://kubernetes.default.svc
     - namespace: kube-system
+      server: https://kubernetes.default.svc
+    - namespace: kyverno
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: cert-manager.io
@@ -36,6 +39,10 @@ spec:
       kind: ValidatingWebhookConfiguration
     - group: admissionregistration.k8s.io
       kind: MutatingWebhookConfiguration
+    - group: kyverno.io
+      kind: ClusterPolicy
+    - group: kyverno.io
+      kind: ClusterCleanupPolicy
   namespaceResourceWhitelist:
     - group: apps
       kind: Deployment
