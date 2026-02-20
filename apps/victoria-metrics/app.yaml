@@ -32,12 +32,25 @@ spec:
             limits:
               cpu: 200m
               memory: 256Mi
+          plugins:
+            - victoriametrics-logs-datasource
+          additionalDataSources:
+            - name: VictoriaLogs
+              type: victoriametrics-logs-datasource
+              url: http://vlogs-victoria-logs-single-server.monitoring.svc:9428
+              isDefault: false
           persistence:
             enabled: true
             storageClassName: local-path
-            size: 1Gi
             accessModes:
               - ReadWriteOnce
+          plugins:
+            - victoriametrics-logs-datasource
+          additionalDataSources:
+            - name: VictoriaLogs
+              type: victoriametrics-logs-datasource
+              url: http://vlogs-victoria-logs-single-server.logging.svc:9428
+              isDefault: false
 
         vmsingle:
           spec:
