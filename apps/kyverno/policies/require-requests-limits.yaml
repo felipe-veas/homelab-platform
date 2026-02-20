@@ -34,6 +34,7 @@ spec:
                 - kube-system
                 - kyverno
                 - monitoring
+                - logging
       validate:
         cel:
           expressions:
