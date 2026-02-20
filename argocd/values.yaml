@@ -15,7 +15,9 @@ server:
     ingressClassName: traefik
     hostname: argocd.localhost
     annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: web
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      cert-manager.io/cluster-issuer: homelab-ca-issuer
+    tls: true
 
 repoServer:
   resources:
