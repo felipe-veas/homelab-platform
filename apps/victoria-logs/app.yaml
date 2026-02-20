@@ -9,25 +9,27 @@ spec:
   project: infrastructure
   source:
     repoURL: https://victoriametrics.github.io/helm-charts/
-    chart: victoria-logs-stack
-    targetRevision: 0.16.0
+    chart: victoria-logs-single
+    targetRevision: 0.11.26
     helm:
       releaseName: vlogs
       values: |
-        grafana:
-          enabled: false
-        victoria-logs:
-          deployment:
-            replicaCount: 1
-          single:
-            storage:
-              volumeClaimTemplate:
-                spec:
-                  storageClassName: local-path
-                  accessModes: ["ReadWriteOnce"]
-                  resources:
-                    requests:
-                      storage: 10Gi
+        server:
+          replicaCount: 1
+          retentionPeriod: 7
+          persistentVolume:
+            enabled: true
+            storageClassName: local-path
+            accessModes:
+              - ReadWriteOnce
+            size: 10Gi
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: logging
