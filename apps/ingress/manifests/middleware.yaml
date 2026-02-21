@@ -18,5 +18,5 @@ spec:
     frameDeny: true
     browserXssFilter: true
     contentTypeNosniff: true
-    forceSTSHeader: false       # false en local, sin TLS real
+    forceSTSHeader: false       # false in local setup, no real TLS
     stsSeconds: 0

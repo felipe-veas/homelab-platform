@@ -58,7 +58,6 @@ spec:
                   - monitoring
                   - kube-system
                   - logging
-                  - logging
             disallow-host-path:
               any:
               - resources:

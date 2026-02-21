@@ -12,7 +12,7 @@ metadata:
 spec:
   selfSigned: {}
 ---
-# CA local para desarrollo
+# Local CA for development
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:

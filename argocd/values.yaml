@@ -3,7 +3,7 @@ global:
 
 configs:
   params:
-    server.insecure: true   # Sin TLS en servidor local, Traefik maneja TLS
+    server.insecure: true   # No TLS on local server; Traefik handles TLS
 
 server:
   service:

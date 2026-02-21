@@ -1,10 +1,15 @@
 # Terraform
-.terraform/
-terraform.tfstate
-terraform.tfstate.backup
 *.tfvars
 !*.tfvars.example
-.terraform.lock.hcl
+**/.terraform/*
+*.tfstate
+*.tfstate.backup
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
 
 # Secrets & keys
 *.pem
@@ -13,6 +18,24 @@ terraform.tfstate.backup
 *.p12
 kubeconfig
 *.kubeconfig
+
+# Environment
+.env
+.envrc
+.direnv/
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Helm
+*.tgz
+
+# LLM
+.claude/
 
 # OS
 .DS_Store
