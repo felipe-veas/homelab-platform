@@ -1,0 +1,86 @@
+---
+# Platform SLO Recording Rules
+#
+# SLO 1 — Platform Availability (99.5%)
+#   SLI: avg(up) across core platform jobs
+#   Error budget: 0.5% of time (~3.6h/month)
+#   Note: job names are defaults from vm-k8s-stack release name "vm".
+#         Adjust the regex if your actual job labels differ.
+#
+# SLO 2 — ArgoCD Sync Health (99%)
+#   SLI: fraction of ArgoCD Applications in Synced state
+#   Error budget: 1% of apps unsync'd at any given time
+#
+# Retention: 3d. Error budget remaining is computed over a 1d window
+# as a practical proxy — extend retention to use a 30d window.
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: platform-slo-recording
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/part-of: platform-slos
+spec:
+  groups:
+    - name: platform.slo.availability.recording
+      interval: 1m
+      rules:
+        # ── Error rate over multiple windows ──────────────────────────────
+        - record: slo:platform_up:error_rate5m
+          expr: |
+            1 - avg(avg_over_time(
+              up{job=~"argocd-server|vm-vmsingle-.*|vm-grafana"}[5m]
+            ))
+
+        - record: slo:platform_up:error_rate30m
+          expr: |
+            1 - avg(avg_over_time(
+              up{job=~"argocd-server|vm-vmsingle-.*|vm-grafana"}[30m]
+            ))
+
+        - record: slo:platform_up:error_rate1h
+          expr: |
+            1 - avg(avg_over_time(
+              up{job=~"argocd-server|vm-vmsingle-.*|vm-grafana"}[1h]
+            ))
+
+        - record: slo:platform_up:error_rate6h
+          expr: |
+            1 - avg(avg_over_time(
+              up{job=~"argocd-server|vm-vmsingle-.*|vm-grafana"}[6h]
+            ))
+
+        # ── Burn rates (SLO = 99.5%, error budget fraction = 0.005) ──────
+        - record: slo:platform_up:burn_rate1h
+          expr: slo:platform_up:error_rate1h / 0.005
+
+        - record: slo:platform_up:burn_rate6h
+          expr: slo:platform_up:error_rate6h / 0.005
+
+        # ── Error budget remaining (1d window proxy) ──────────────────────
+        - record: slo:platform_up:error_budget_remaining
+          expr: |
+            clamp_min(
+              1 - (
+                (1 - avg(avg_over_time(
+                  up{job=~"argocd-server|vm-vmsingle-.*|vm-grafana"}[1d]
+                ))) / 0.005
+              ),
+              0
+            )
+
+    - name: platform.slo.argocd_sync.recording
+      interval: 1m
+      rules:
+        # ── SLI: sync ratio (point-in-time) ──────────────────────────────
+        - record: slo:argocd_sync:ratio
+          expr: |
+            sum(argocd_app_info{sync_status="Synced"})
+            / sum(argocd_app_info)
+
+        # ── Error rate and burn rate (SLO = 99%, budget = 0.01) ──────────
+        - record: slo:argocd_sync:error_rate
+          expr: 1 - slo:argocd_sync:ratio
+
+        - record: slo:argocd_sync:burn_rate
+          expr: slo:argocd_sync:error_rate / 0.01
