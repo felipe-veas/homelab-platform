@@ -1,0 +1,86 @@
+---
+# Platform SLO Burn Rate Alerts
+#
+# Uses the multi-window, multi-burn-rate approach from Google SRE Workbook ch.5.
+#
+# Alert windows for a 30-day SLO:
+#   Fast burn (critical):  1h + 5m windows,  14.4x burn → exhausts budget in ~2 days
+#   Slow burn (warning):   6h + 30m windows, 6x burn    → exhausts budget in ~5 days
+#
+# Note: these alerts fire based on rate, not on a specific error budget
+# percentage consumed, so they work even with limited (3d) retention.
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: platform-slo-alerts
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/part-of: platform-slos
+spec:
+  groups:
+    - name: platform.slo.availability.alerts
+      rules:
+        # ── Fast burn: 1h > 14.4x AND 5m > 14.4x ────────────────────────
+        - alert: PlatformAvailabilityFastBurn
+          expr: |
+            slo:platform_up:burn_rate1h > 14.4
+            and
+            (slo:platform_up:error_rate5m / 0.005) > 14.4
+          for: 2m
+          labels:
+            severity: critical
+            slo: platform_availability
+          annotations:
+            summary: "Platform SLO fast burn — error budget exhausting rapidly"
+            description: >
+              Platform components are consuming the error budget {{ $value | humanize }}x
+              faster than sustainable. At this rate the monthly budget will be exhausted
+              in less than 2 days.
+              Investigate: ArgoCD server, VMSingle, Grafana pod status.
+
+        # ── Slow burn: 6h > 6x AND 30m > 6x ─────────────────────────────
+        - alert: PlatformAvailabilitySlowBurn
+          expr: |
+            slo:platform_up:burn_rate6h > 6
+            and
+            (slo:platform_up:error_rate30m / 0.005) > 6
+          for: 15m
+          labels:
+            severity: warning
+            slo: platform_availability
+          annotations:
+            summary: "Platform SLO slow burn — error budget draining"
+            description: >
+              Platform components are consuming the error budget {{ $value | humanize }}x
+              faster than sustainable over the last 6 hours.
+              At this rate the monthly budget will be exhausted in less than 5 days.
+
+    - name: platform.slo.argocd_sync.alerts
+      rules:
+        # ── Fast burn on ArgoCD sync ──────────────────────────────────────
+        - alert: ArgoCDSyncSLOFastBurn
+          expr: slo:argocd_sync:burn_rate > 14.4
+          for: 2m
+          labels:
+            severity: critical
+            slo: argocd_sync_health
+          annotations:
+            summary: "ArgoCD sync SLO fast burn — many apps out of sync"
+            description: >
+              ArgoCD sync ratio is well below the 99% target.
+              Current burn rate: {{ $value | humanize }}x.
+              Check ArgoCD Applications for sync errors.
+
+        # ── Sustained degradation ─────────────────────────────────────────
+        - alert: ArgoCDSyncSLODegraded
+          expr: slo:argocd_sync:ratio < 0.99
+          for: 30m
+          labels:
+            severity: warning
+            slo: argocd_sync_health
+          annotations:
+            summary: "ArgoCD sync ratio below SLO target for 30m"
+            description: >
+              At least {{ printf "%.1f" (mul (sub 1 (index .Values 0)) 100) }}% of
+              ArgoCD Applications have been out of sync for more than 30 minutes.
+              Current sync ratio: {{ $value | humanize }}.
